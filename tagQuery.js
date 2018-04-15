@@ -52,6 +52,7 @@
 
             var forward_query = [];
             var original_tags = array_flatten(node.tags);
+            var show_discarded = false;
 
             // Set node tags based on query
             node.query.forEach(function(item){
@@ -74,7 +75,6 @@
                 var tag_count = {};
                 var highest_tag_count = 0;
                 var highest_tag_name  = "";
-                var show_discarded = false;
 
                 node.data.forEach(function(item){
                     item.tags.forEach(function(tag){
