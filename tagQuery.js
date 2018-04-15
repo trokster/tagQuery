@@ -61,6 +61,9 @@
                     // This is a not a tag, needs to be passed to next query node if any
                     // Last wins, others ignored
                     forward_query = item;
+                } else if(item.length == 0) {
+                    // If [], keep discarded
+                    show_discarded = true;
                 }
             });
 
@@ -71,6 +74,7 @@
                 var tag_count = {};
                 var highest_tag_count = 0;
                 var highest_tag_name  = "";
+                var show_discarded = false;
 
                 node.data.forEach(function(item){
                     item.tags.forEach(function(tag){
@@ -109,13 +113,10 @@
 
             var forward_data = [];
             var discarded_data = [];
-            var show_discarded = false;
 
             node.data.forEach(function(item){
                 // Find tags matches
                 if(array_in_array(node.tags, item.tags)){
-                    // If [], keep discarded
-                    show_discarded = true;
                     // If full match, add as leaves
                     if(node.tags.length == 0 || node.tags.length == item.tags.length){
                         // Add as leaf
