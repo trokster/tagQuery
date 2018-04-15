@@ -2,7 +2,7 @@
 Creates hierarchy from initial query and # of tag occurence
 
 __Behavior__:
-- You feed it a list of objects with tags
+- You feed it a query and a list of objects with tags
 - tagQuery(\<query\>, [ \<objs\> ])
 
 - Query is of the form:
