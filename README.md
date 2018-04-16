@@ -10,6 +10,7 @@ __Behavior__:
   
 - You can specify a subquery inside a query: [ "tag001", "tag002", ["tag003", []] ] : This would return first query, discarding non matches, and from within that selection it would filter out tag003, and bring back the rest in a separate node.
 
+[Demo](https://trokster.github.io/tagQuery)
 
 __Examples__:
 
