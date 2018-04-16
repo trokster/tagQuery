@@ -1,5 +1,12 @@
 (function(root){
 
+    var object_list = [
+        {id: '001', tags: ['tag01', 'tag02', 'tag03']},
+        {id: '002', tags: ['tag04', 'tag02', 'tag05']},
+        {id: '003', tags: ['tag03', 'tag01', 'tag02']},
+        {id: '004', tags: ['tag01', 'tag02', 'tag03']},
+    ];
+
     // Checks if every item in arr1 is in arr2
     var array_in_array = function(arr1, arr2){
         return arr1.every(function(val) { return arr2.indexOf(val) >= 0; });

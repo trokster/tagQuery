@@ -1,9 +1,68 @@
-<html>
-    <head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+
+        <link rel="stylesheet" href="./assets/element-ui.css">
+        <link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet">
+
         <script src="./tagQuery.js" type="text/javascript"></script>
-        <script src="https://unpkg.com/vue/dist/vue.js"></script>
+        <script src="./assets/vue.js" type="text/javascript"></script>
+        <script src="./assets/vuex.js" type="text/javascript"></script>
+
+        <script src="./assets/elements-ui.js" type="text/javascript"></script>
+
+        <script src="./assets/d3.v3.js" type="text/javascript"></script>
+        <script src="./assets/cola.min.js" type="text/javascript"></script>
+
+        <script src="./assets/md5.min.js" type="text/javascript"></script>
+ 
+        <script src="./assets/playground.js"></script>
+
+        <style>
+        
+            html, body {
+                position:absolute;
+                margin:0;
+                top:0;
+                left:0;
+                height:100%;
+                width:100%;
+                box-sizing:border-box;
+                border:solid red 0px;
+            }
+
+            .background {
+                stroke: blue;
+                stroke-width: 0px;
+                fill: white;
+            }
+
+            .node {
+            cursor: move;
+            }
+
+            .group {
+                fill-opacity:1;
+                cursor: move;
+                fill-opacity: 1;
+            }
+
+            .link {
+                stroke: #7a4e4e;
+                stroke-opacity: 1;
+            }
+
+            .label {
+                fill: black;
+                font-family: Quicksand;
+                font-size: 16px;
+                text-anchor: middle;
+                cursor: move;
+            }
+        </style>
+
     </head>
     <body>
-        Hello there
     </body>
 </html>
