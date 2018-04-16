@@ -31,7 +31,12 @@ var init = function(){
         .append('g')
         .attr('transform', 'translate(0,0) scale(1)');
 
-          
+    d3.selection.prototype.moveToFront = function() {  
+        return this.each(function(){
+            this.parentNode.appendChild(this);
+        });
+    };
+                
     function redraw() {
         vis.attr("transform", "translate(" + d3.event.translate + ")" + " scale(" + d3.event.scale + ")");
         d3.selectAll(".shoop").attr("stroke-width", 1.5 / d3.event.scale);
@@ -258,6 +263,7 @@ var init = function(){
             return "translate(" + (d.x - d.width / 2 + pad) + "," + (d.y - d.height / 2 + pad) + ")"; 
         });
         
+        vis.selectAll(".node").moveToFront();
         /*group.attr("x", function (d) { return d.bounds.x-20; })
             .attr("y", function (d) { return d.bounds.y-20; })
             .attr("width", function (d) { return d.bounds.width()+40; })
