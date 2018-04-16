@@ -56,7 +56,7 @@ var init = function(){
         .append("div")
         .attr("id", "div-menu")
         .style({
-            width:"20vw",
+            width:"300px",
             height:"98vh",
             border: "solid rgba(0,0,0,.1) 1px",
             background: "rgba(0,0,0,.1)",
