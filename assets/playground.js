@@ -70,7 +70,8 @@ var init = function(){
     var graph = {
         nodes: [],
         groups: [],
-        links: []
+        links: [],
+        constraints: []
     };
 
     var updateGraph = function(query){
@@ -79,12 +80,13 @@ var init = function(){
         while(graph.nodes.length > 0) graph.nodes.pop();
         while(graph.links.length > 0) graph.links.pop();
         while(graph.groups.length > 0) graph.groups.pop();
+        while(graph.constraints.length > 0) graph.constraints.pop();
 
         var res = tagQuery(query, window.object_list);
         //console.log(JSON.stringify(res, null, 2));
 
         to_process = [[res]];
-        
+
         var process = function(param){
             var node = null;
             var item = param[0];
@@ -138,6 +140,7 @@ var init = function(){
                     __uuid : md5(leaf.id + JSON.stringify(leaf.tags)),
                     border: "green"
                 });
+
                 graph.links.push({
                     source: node,
                     target: graph.nodes[graph.nodes.length-1], // The leaf we just added
@@ -156,6 +159,11 @@ var init = function(){
             process(param);
         }
 
+        // Apply constraints
+        graph.links.forEach(function(link){
+            graph.constraints.push({"axis":"y", "left":graph.nodes.indexOf(link.source), "right":graph.nodes.indexOf(link.target), "gap":200, "equality":"true"});
+        });
+
         return graph;
     };
 
@@ -171,7 +179,7 @@ var init = function(){
             //.groups(graph.groups)
             //.flowLayout('x', 1500)
             //.jaccardLinkLengths(500)
-            //.constraints(graph.constraints)
+            .constraints(graph.constraints)
             //.symmetricDiffLinkLengths(250)
             .start(50,50,50);
 
@@ -284,7 +292,7 @@ var init = function(){
     window.cola2 = cola ;
 
 
-    d3.select("#div-menu").html("<div style='width:100%;text-align:center;padding:5px;box-sizing:border-box'><span style='font-family:Quicksand;'>Edit query</span><br/><br/><input style='padding:5px;font-family:Quicksand;font-size:20px' id='tagquery' value='[\"milestone\", []]'></input></div>");
+    d3.select("#div-menu").html("<div style='width:100%;text-align:center;padding:5px;box-sizing:border-box'><span style='font-family:Quicksand;'>Edit query</span><br/><br/><input style='padding:5px;font-family:Quicksand;font-size:20px' id='tagquery' value='[\"milestone\", []]'></input><br/><small><i>Not sure how to avoid initial overlap, if you have an idea, drop me a pm please :)</i></small></div>");
     d3.select("#tagquery").on("change", function(){
         var str = this.value;
         try {
