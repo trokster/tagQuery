@@ -1,12 +1,14 @@
 var init = function(){
 
-    window.object_list = [
-        {id: '001', tags: ['tag01', 'tag02', 'tag03']},
-        {id: '002', tags: ['tag04', 'tag02', 'tag05']},
-        {id: '003', tags: ['tag03', 'tag01', 'tag02']},
-        {id: '004', tags: ['tag01', 'tag02', 'tag03']},
-    ];
-
+    object_list = [
+        { "id": "Allow dynamic components", "tags": ["task", "framework", "vue", "milestone"] },
+        { "id": "Create framework", "tags": ["task", "in progress", "milestone"] },
+        { "id": "Alter vue-loader", "tags": ["task", "vue", "framework", "TODO"] },
+        { "id": "Integrate decimal.js", "tags": ["task", "UI", "display"] },
+        { "id": "Integrate PouchDB", "tags": ["task", "DB", "vuex", "vue"] },
+        { "id": "Create Tag hierarchy", "tags": ["task", "tags", "in progress", "milestone"] },
+        { "id": "Create Tag Query", "tags": ["task", "done", "milestone", "tags"] },
+    ]
     var cola = window.cola.d3adaptor(d3)
         .linkDistance(1)
         //.symmetricDiffLinkLengths(50)
@@ -286,7 +288,7 @@ var init = function(){
     window.cola2 = cola ;
 
 
-    d3.select("#div-menu").html("<div style='width:100%;text-align:center;padding:5px;box-sizing:border-box'><span>Edit query</span><br><input id='tagquery'></input></div>");
+    d3.select("#div-menu").html("<div style='width:100%;text-align:center;padding:5px;box-sizing:border-box'><span>Edit query</span><br><input id='tagquery' value='[]'></input></div>");
     d3.select("#tagquery").on("change", function(){
         var str = this.value;
         try {
@@ -301,6 +303,9 @@ var init = function(){
             alert("Couldn't interpret input: " + str);
         }
     });
+
+    updateGraph([]);
+    updateCola();
 
 }
 
