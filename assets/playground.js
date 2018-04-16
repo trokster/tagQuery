@@ -10,7 +10,9 @@ var init = function(){
         { "id": "Create Tag Query", "tags": ["task", "done", "milestone", "tags"] },
     ]
     var cola = window.cola.d3adaptor(d3)
-        .linkDistance(1)
+        .linkDistance(function(d){
+            return d.length;
+        })
         //.symmetricDiffLinkLengths(50)
         .avoidOverlaps(true)
         .handleDisconnected(false);
@@ -74,6 +76,7 @@ var init = function(){
         while(graph.groups.length > 0) graph.groups.pop();
 
         var res = tagQuery(query, window.object_list);
+        //console.log(JSON.stringify(res, null, 2));
 
         to_process = [[res]];
         
@@ -112,7 +115,7 @@ var init = function(){
                 graph.links.push({
                     source: param[1],
                     target: graph.nodes[graph.nodes.length-1], // The leaf we just added
-                    length: 20,
+                    length: 250,
                     show: 150
                 });
             }
@@ -123,7 +126,7 @@ var init = function(){
                     name: leaf.id,
                     tags: leaf.tags,
                     width: 20*leaf.id.length + 20,
-                    height: 70,
+                    height: 70 + 50,
                     x:0,
                     y:0,
                     needs_drawing: true,
@@ -133,7 +136,7 @@ var init = function(){
                 graph.links.push({
                     source: node,
                     target: graph.nodes[graph.nodes.length-1], // The leaf we just added
-                    length: 5,
+                    length: 200,
                     show: true
                 });
             });
@@ -152,32 +155,6 @@ var init = function(){
     };
 
 
-
-    graph.nodes.push({
-        name: "Hello",
-        type: "item",
-        width: 200,
-        height: 300,
-        needs_drawing: true,
-        data: null
-    });
-    graph.nodes.push({
-        name: "There",
-        type: "item",
-        width: 200,
-        height: 300,
-        needs_drawing: true,
-        data: null
-    });
-
-    graph.links.push({
-        source: graph.nodes[0],
-        target: graph.nodes[1],
-        length: 150,
-        show: true
-    });
-
-
     var pad = 2;
 
 
@@ -190,7 +167,7 @@ var init = function(){
             //.flowLayout('x', 1500)
             //.jaccardLinkLengths(500)
             //.constraints(graph.constraints)
-            .symmetricDiffLinkLengths(250)
+            //.symmetricDiffLinkLengths(250)
             .start(50,50,50);
 
         vis.selectAll(".link")
@@ -253,12 +230,25 @@ var init = function(){
                 d3.select(this)
                     .append("text").text(d.name)
                     .attr("x", d.width/2)
-                    .attr("y", d.height/2+pad)
+                    .attr("y", d.type == "leaf" ? d.height/2+pad - 20 : d.height/2+pad)
                     .attr("font-family", "Quicksand")
                     .attr("text-anchor", "middle")
                     .attr("font-size", "20px")
                     .attr("font-weight", "bold")
                     .attr("fill", "black");
+                
+                if(d.type == "leaf") {
+                    d3.select(this)
+                        .append("text").text("[ " + d.tags.join(" - ") + " ]")
+                        .attr("x", d.width/2)
+                        .attr("y", d.height/2+pad + 20)
+                        .attr("font-family", "Quicksand")
+                        .attr("text-anchor", "middle")
+                        .attr("font-size", "20px")
+                        .attr("font-weight", "bold")
+                        .attr("fill", "black");
+                }
+
 
                 d.needs_drawing = false;
                 d3.select(this).attr("__uuid", d.__uuid);
