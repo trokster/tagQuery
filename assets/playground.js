@@ -71,7 +71,7 @@ var init = function(){
         while(graph.links.length > 0) graph.links.pop();
         while(graph.groups.length > 0) graph.groups.pop();
 
-        var res = tagQuery(query, object_list);
+        var res = tagQuery(query, window.object_list);
 
         to_process = [[res]];
         
