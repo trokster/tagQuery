@@ -1,6 +1,6 @@
 var init = function(){
 
-    var object_list = [
+    window.object_list = [
         {id: '001', tags: ['tag01', 'tag02', 'tag03']},
         {id: '002', tags: ['tag04', 'tag02', 'tag05']},
         {id: '003', tags: ['tag03', 'tag01', 'tag02']},
