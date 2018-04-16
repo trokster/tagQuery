@@ -284,7 +284,7 @@ var init = function(){
     window.cola2 = cola ;
 
 
-    d3.select("#div-menu").html("<div style='width:100%;text-align:center;padding:5px;box-sizing:border-box'><span>Edit query</span><br><input id='tagquery' value='[]'></input></div>");
+    d3.select("#div-menu").html("<div style='width:100%;text-align:center;padding:5px;box-sizing:border-box'><span style='font-family:Quicksand;'>Edit query</span><br/><br/><input style='padding:5px;font-family:Quicksand;font-size:20px' id='tagquery' value='[\"milestone\", []]'></input></div>");
     d3.select("#tagquery").on("change", function(){
         var str = this.value;
         try {
@@ -300,7 +300,7 @@ var init = function(){
         }
     });
 
-    updateGraph([]);
+    updateGraph(["milestone", []]);
     updateCola();
 
 }
