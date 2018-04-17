@@ -182,7 +182,17 @@
                 // If max count = 1, add everything as leaves
                 if(highest_tag_count == 1) {
                     node.data.forEach(function(item){
-                        node.leaves.push(item);
+
+                        // Check if we have all tags and a parent
+                        if(array_in_array(node.tags, item.tags)) {
+                            node.leaves.push(item);
+                        } else {
+                            if(parent) {
+                                parent.leaves.push(item);
+                            } else {
+                                console.log("Could not classify: " + JSON.stringify(item));
+                            }
+                        }
                     });
                     return;
                 } else {

@@ -86,12 +86,13 @@ var init = function(){
         //console.log(JSON.stringify(res, null, 2));
 
         var to_process = [[res]];
-        var track_leaves = [];
 
         var process = function(param){
             var node = null;
             var item = param[0];
+            var parent = null;
             if(param[1]) {
+                parent = param[1];
                 node = {
                     type: "node",
                     name: "[ " + item.tags.join(" - ") + " ]",
@@ -101,7 +102,10 @@ var init = function(){
                     x:0,
                     y:0,
                     needs_drawing: true,
-                    __uuid : md5(item.depth + JSON.stringify(item.tags))
+                    __uuid : md5(item.depth + JSON.stringify(item.tags)),
+                    ref : item,
+                    depth: parent.depth + 1,
+                    children: []
                 };
             } else {
                 node = {
@@ -114,7 +118,10 @@ var init = function(){
                     y:0,
                     needs_drawing: true,
                     __uuid : md5(item.depth + JSON.stringify(item.tags)),
-                    border: "orange"
+                    border: "orange",
+                    ref: item,
+                    depth: 0,
+                    children: []
                 };
             }
             graph.nodes.push(node);
@@ -126,6 +133,7 @@ var init = function(){
                     length: 250,
                     show: 150
                 });
+                param[1].children.push(graph.nodes[graph.nodes.length-1]);
             }
 
             var prev = null;
@@ -135,13 +143,16 @@ var init = function(){
                     type: "leaf",
                     name: leaf.id,
                     tags: leaf.tags,
-                    width: 20*leaf.id.length + 20,
+                    width: 16*("[ " + leaf.tags.join(" - ") + " ]").length + 5,
                     height: 70 + 50,
                     x:0,
                     y:0,
                     needs_drawing: true,
                     __uuid : md5(leaf.id + JSON.stringify(leaf.tags)),
-                    border: "green"
+                    border: "green",
+                    ref: item,
+                    depth: node.depth + 1,
+                    children: []
                 });
 
                 graph.links.push({
@@ -150,15 +161,11 @@ var init = function(){
                     length: 200,
                     show: true
                 });
+                node.children.unshift(graph.nodes[graph.nodes.length-1]);
 
                 prev = graph.nodes.length;
                 to_group.push(prev-1);
-                track_leaves.push(prev-1);
             });
-
-            if(to_group.length > 1) {
-                graph.groups.push({name: Math.random+"", leaves: to_group, color: "red"})
-            }
 
             param[0].nodes.forEach(function(item){
                 to_process.push([item, node]);
@@ -177,24 +184,54 @@ var init = function(){
                 "left":graph.nodes.indexOf(link.source), 
                 "right":graph.nodes.indexOf(link.target), 
                 "gap":200, 
-                "equality":"true"
+                "equality":true
             });
         });
 
-        // Space leaves out so we get a clean graph
-        for (var i=1;i<track_leaves.length;i++){
-            
-            graph.constraints.push({
-                "axis"  :"x", 
-                "left"  : track_leaves[i-1], 
-                "right" : track_leaves[i], 
-                "gap"   : graph.nodes[track_leaves[i]].width/2 + graph.nodes[track_leaves[i-1]].width/2 + 50
-            });
+        var items = {};
+        var max_depth = 0;
+        
+        var to_process = [graph.nodes[0]];
 
+        while(to_process.length > 0) {
+            
+            var node = to_process.pop();
+            var leaves = [];
+            var nodes = [];
+
+            if(node.depth > max_depth) {
+                max_depth = node.depth;
+            }
+
+            node.children.forEach(function(item){
+                if(item.type == "leaf") {
+                    leaves.push(item);
+                } else {
+                    nodes.push(item);
+                    to_process.unshift(item);
+                }
+            });
+            if(!items[node.depth]) items[node.depth] = [];
+            items[node.depth] = items[node.depth].concat(leaves, nodes);
         }
 
+        window.items = items;
+
+        for(var i=0;i<=max_depth;i++) {
+            if(items[i].length > 1) {
+                for (var j=1;j<items[i].length;j++){
+                    graph.constraints.push({
+                        "axis"  : "x", 
+                        "left"  : graph.nodes.indexOf(items[i][j-1]), 
+                        "right" : graph.nodes.indexOf(items[i][j]), 
+                        "gap"   : items[i][j-1].width / 2 + items[i][j].width / 2 + 50
+                    });
+                }
+            }
+        }        
 
         return graph;
+
     };
 
 
@@ -221,6 +258,7 @@ var init = function(){
             .attr("stroke", function(d){return d.color || "pink"})
             .call(cola.drag);
         */
+
         vis.selectAll(".link")
             .data(graph.links)
             .enter().append("path")
