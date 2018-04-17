@@ -84,6 +84,7 @@ var init = function(){
 
         var res = tagQuery(query, window.object_list);
         //console.log(JSON.stringify(res, null, 2));
+        window.res = res;
 
         var to_process = [[res]];
 
@@ -167,6 +168,12 @@ var init = function(){
                 to_group.push(prev-1);
             });
 
+            /*
+            if(to_group.length > 1) {
+                graph.groups.push({name: Math.random+"", leaves: to_group, color: "red"})
+            }
+            */
+
             param[0].nodes.forEach(function(item){
                 to_process.push([item, node]);
             });
@@ -184,7 +191,7 @@ var init = function(){
                 "left":graph.nodes.indexOf(link.source), 
                 "right":graph.nodes.indexOf(link.target), 
                 "gap":200, 
-                "equality":true
+                //"equality":true
             });
         });
 
@@ -212,10 +219,29 @@ var init = function(){
                 }
             });
             if(!items[node.depth]) items[node.depth] = [];
+
+            var tmp = leaves.concat(nodes);
+
+            if(tmp.length == 1) {
+                graph.constraints.push({
+                    "axis"      : "x", 
+                    "left"      : graph.nodes.indexOf(node),
+                    "right"     : graph.nodes.indexOf(tmp[0]),
+                    "gap"       : 0,
+                    "equality"  : true
+                });
+            } else if(tmp.length > 2 && tmp.length % 2 != 0 ) {
+                graph.constraints.push({
+                    "axis"      : "x", 
+                    "left"      : graph.nodes.indexOf(node),
+                    "right"     : graph.nodes.indexOf(tmp[Math.floor(tmp.length/2)]),
+                    "gap"       : 0,
+                    "equality"  : true
+                });
+            }
+
             items[node.depth] = items[node.depth].concat(leaves, nodes);
         }
-
-        window.items = items;
 
         for(var i=0;i<=max_depth;i++) {
             if(items[i].length > 1) {

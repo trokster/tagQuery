@@ -108,7 +108,7 @@
                     var highest_tag_name  = "";
 
                     forward_data.forEach(function(item){
-                        item.tags.forEach(function(tag){
+                        item.tags.forEach(function(tag){    
 
                             // Ignore current tags
                             if(node.tags.indexOf(tag) != -1) return;
@@ -164,7 +164,7 @@
                 var highest_tag_count = 0;
                 var highest_tag_name  = "";
 
-                node.data.forEach(function(item){
+                discarded_data.forEach(function(item){
                     item.tags.forEach(function(tag){
 
                         // Ignore current tags
@@ -181,7 +181,7 @@
 
                 // If max count = 1, add everything as leaves
                 if(highest_tag_count == 1) {
-                    node.data.forEach(function(item){
+                    discarded_data.forEach(function(item){
 
                         // Check if we have all tags and a parent
                         if(array_in_array(node.tags, item.tags)) {
