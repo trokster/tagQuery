@@ -85,7 +85,8 @@ var init = function(){
         var res = tagQuery(query, window.object_list);
         //console.log(JSON.stringify(res, null, 2));
 
-        to_process = [[res]];
+        var to_process = [[res]];
+        var track_leaves = [];
 
         var process = function(param){
             var node = null;
@@ -93,7 +94,7 @@ var init = function(){
             if(param[1]) {
                 node = {
                     type: "node",
-                    name: "[" + item.tags.join(" - ") + " ]",
+                    name: "[ " + item.tags.join(" - ") + " ]",
                     tags: item.tags,
                     width: 20*("[ " + item.tags.join(" - ") + " ]").length + 20,
                     height: 70,
@@ -127,6 +128,8 @@ var init = function(){
                 });
             }
 
+            var prev = null;
+            var to_group = [graph.nodes.length-1];
             param[0].leaves.forEach(function(leaf){
                 graph.nodes.push({
                     type: "leaf",
@@ -147,7 +150,15 @@ var init = function(){
                     length: 200,
                     show: true
                 });
+
+                prev = graph.nodes.length;
+                to_group.push(prev-1);
+                track_leaves.push(prev-1);
             });
+
+            if(to_group.length > 1) {
+                graph.groups.push({name: Math.random+"", leaves: to_group, color: "red"})
+            }
 
             param[0].nodes.forEach(function(item){
                 to_process.push([item, node]);
@@ -161,8 +172,27 @@ var init = function(){
 
         // Apply constraints
         graph.links.forEach(function(link){
-            graph.constraints.push({"axis":"y", "left":graph.nodes.indexOf(link.source), "right":graph.nodes.indexOf(link.target), "gap":200, "equality":"true"});
+            graph.constraints.push({
+                "axis":"y", 
+                "left":graph.nodes.indexOf(link.source), 
+                "right":graph.nodes.indexOf(link.target), 
+                "gap":200, 
+                "equality":"true"
+            });
         });
+
+        // Space leaves out so we get a clean graph
+        for (var i=1;i<track_leaves.length;i++){
+            
+            graph.constraints.push({
+                "axis"  :"x", 
+                "left"  : track_leaves[i-1], 
+                "right" : track_leaves[i], 
+                "gap"   : graph.nodes[track_leaves[i]].width/2 + graph.nodes[track_leaves[i-1]].width/2 + 50
+            });
+
+        }
+
 
         return graph;
     };
@@ -176,13 +206,21 @@ var init = function(){
         cola
             .nodes(graph.nodes)
             .links(graph.links)
-            //.groups(graph.groups)
+            .groups(graph.groups)
             //.flowLayout('x', 1500)
             //.jaccardLinkLengths(500)
             .constraints(graph.constraints)
             //.symmetricDiffLinkLengths(250)
-            .start(50,50,50);
+            .start(100,100,100);
 
+        /*vis.selectAll(".group")
+            .data(graph.groups)
+            .enter().append("rect")
+            .attr("rx", 8).attr("ry", 8)
+            .attr("class", "group")
+            .attr("stroke", function(d){return d.color || "pink"})
+            .call(cola.drag);
+        */
         vis.selectAll(".link")
             .data(graph.links)
             .enter().append("path")
@@ -270,9 +308,10 @@ var init = function(){
 
             return "translate(" + (d.x - d.width / 2 + pad) + "," + (d.y - d.height / 2 + pad) + ")"; 
         });
-        
+
         vis.selectAll(".node").moveToFront();
-        /*group.attr("x", function (d) { return d.bounds.x-20; })
+        /*
+        vis.selectAll(".group").attr("x", function (d) { return d.bounds.x-20; })
             .attr("y", function (d) { return d.bounds.y-20; })
             .attr("width", function (d) { return d.bounds.width()+40; })
             .attr("height", function (d) { return d.bounds.height()+40; })
