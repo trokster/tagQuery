@@ -191,7 +191,7 @@ var init = function(){
                 "left":graph.nodes.indexOf(link.source), 
                 "right":graph.nodes.indexOf(link.target), 
                 "gap":200, 
-                //"equality":true
+                "equality":true
             });
         });
 
