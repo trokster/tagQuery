@@ -1,7 +1,7 @@
 # tagQuery
 Creates hierarchy from initial query and # of tag occurence
 
-* Note : Work still in progress, <span style="color:red">NOT FINALIZED</span> :)
+* Note : Work still in progress, __NOT FINALIZED__ :)
 
 __Behavior__:
 - You feed it a query and a list of objects with tags
