@@ -220,7 +220,7 @@ var init = function(){
             });
             if(!items[node.depth]) items[node.depth] = [];
 
-            var tmp = leaves.concat(nodes);
+            /*var tmp = leaves.concat(nodes);
 
             if(tmp.length == 1) {
                 graph.constraints.push({
@@ -238,7 +238,7 @@ var init = function(){
                     "gap"       : 0,
                     "equality"  : true
                 });
-            }
+            }*/
 
             items[node.depth] = items[node.depth].concat(leaves, nodes);
         }
