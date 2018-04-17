@@ -1,6 +1,8 @@
 # tagQuery
 Creates hierarchy from initial query and # of tag occurence
 
+* Note : Work still in progress, NOT FINALIZED :)
+
 __Behavior__:
 - You feed it a query and a list of objects with tags
 - tagQuery(\<query\>, [ \<objs\> ])
