@@ -1,7 +1,6 @@
 # tagQuery
-Creates hierarchy from initial query and # of tag occurence
-In other words, to try to create a tag hierarchy from a flag tags.
-
+Creates hierarchy from initial query and # of tag occurence. 
+* In other words, to try to create a tag hierarchy from a flag tags.
 * Status : Stable, but still Work in progress. Would like to change query syntax. If you have an idea, drop me a line.
 
 __Behavior__:
