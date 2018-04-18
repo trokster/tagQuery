@@ -1,5 +1,25 @@
 var init = function(){
 
+    // Returns a function, that, as long as it continues to be invoked, will not
+    // be triggered. The function will be called after it stops being called for
+    // N milliseconds. If `immediate` is passed, trigger the function on the
+    // leading edge, instead of the trailing.
+    function debounce(func, wait, immediate) {
+        var timeout;
+        return function() {
+            var context = this, args = arguments;
+            var later = function() {
+                timeout = null;
+                if (!immediate) func.apply(context, args);
+            };
+            var callNow = immediate && !timeout;
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+            if (callNow) func.apply(context, args);
+        };
+    };
+
+
     object_list = [
         { "id": "Allow dynamic components", "tags": ["task", "framework", "vue", "milestone"] },
         { "id": "Create framework", "tags": ["task", "in progress", "milestone"] },
@@ -77,7 +97,15 @@ var init = function(){
     var updateGraph = function(query){
 
         // TODO sometime --> keep positions of existing nodes
-        while(graph.nodes.length > 0) graph.nodes.pop();
+        // Track positions of nodes
+        var positions = {};
+
+
+        while(graph.nodes.length > 0) {
+            var node = graph.nodes.pop();
+            positions[node.__uuid] = {x:node.x, y:node.y};
+        }
+        
         while(graph.links.length > 0) graph.links.pop();
         while(graph.groups.length > 0) graph.groups.pop();
         while(graph.constraints.length > 0) graph.constraints.pop();
@@ -256,6 +284,14 @@ var init = function(){
             }
         }        
 
+        // Reset positions where applicable
+        graph.nodes.forEach(function(node){
+            if(positions[node.__uuid]) {
+                node.x = positions[node.__uuid].x;
+                node.y = positions[node.__uuid].y;
+            }
+        });
+
         return graph;
 
     };
@@ -274,7 +310,7 @@ var init = function(){
             //.jaccardLinkLengths(500)
             .constraints(graph.constraints)
             //.symmetricDiffLinkLengths(250)
-            .start(100,100,100);
+            .start(10,20,30);
 
         /*vis.selectAll(".group")
             .data(graph.groups)
@@ -395,8 +431,8 @@ var init = function(){
     window.cola2 = cola ;
 
 
-    d3.select("#div-menu").html("<div style='width:100%;text-align:center;padding:5px;box-sizing:border-box'><span style='font-family:Quicksand;'>Edit query</span><br/><br/><input style='padding:5px;font-family:Quicksand;font-size:20px' id='tagquery' value='[\"milestone\", []]'></input><br/><small><i>Not sure how to avoid initial overlap, if you have an idea, drop me a pm please :)</i></small></div>");
-    d3.select("#tagquery").on("change", function(){
+    d3.select("#div-menu").html("<div style='width:100%;text-align:center;padding:5px;box-sizing:border-box'><span style='font-family:Quicksand;'>Edit query</span><br/><br/><input style='padding:5px;font-family:Quicksand;font-size:20px' id='tagquery' value='[\"milestone\", []]'></input><br/><small><i>Not sure how to avoid initial overlap, if you have an idea, drop me a pm please :)</i></small></div><br/><br/><div id='message_status' style='text-align:center;font-family:quicksand'></div>");
+    /*d3.select("#tagquery").on("change", function(){
         var str = this.value;
         try {
             var param = JSON.parse(str);
@@ -409,7 +445,34 @@ var init = function(){
         } catch(e){
             alert("Couldn't interpret input: " + str);
         }
+    }); */
+
+    d3.select("#tagquery").on("input", function(){
+        d3.select("#message_status").html("");
     });
+
+    var debounced = debounce(function(param){
+        var str = param;
+        console.log("STR: " + str);
+        try {
+            var param = JSON.parse(str);
+            if(param instanceof Array) {
+                updateGraph(param);
+                updateCola();
+            } else {
+                d3.select("#message_status").html("Can't interpret input ( expecting array )");
+            }
+        } catch(e){
+            d3.select("#message_status").html("Couldn't interpret input: not a valid expression.");
+        }
+        console.log("Done");
+    }, 500);
+
+    d3.select("#tagquery").on("input", function(){
+        d3.select("#message_status").html("");
+        debounced(this.value);
+    });
+
 
     updateGraph(["milestone", []]);
     updateCola();
