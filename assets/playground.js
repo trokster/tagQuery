@@ -19,6 +19,10 @@ var init = function(){
         };
     };
 
+    var transition_duration  = window.transition_duration = 800;
+    setTimeout(function(){
+        transition_duration = 0;
+    }, 800)
 
     object_list = [
         { "id": "Allow dynamic components", "tags": ["task", "framework", "vue", "milestone"] },
@@ -131,7 +135,7 @@ var init = function(){
                     x:0,
                     y:0,
                     needs_drawing: true,
-                    __uuid : md5(item.depth + JSON.stringify(item.tags)),
+                    __uuid : md5(JSON.stringify(item.tags)),
                     ref : item,
                     depth: parent.depth + 1,
                     children: []
@@ -146,7 +150,7 @@ var init = function(){
                     x:0,
                     y:0,
                     needs_drawing: true,
-                    __uuid : md5(item.depth + JSON.stringify(item.tags)),
+                    __uuid : md5("root"),
                     border: "orange",
                     ref: item,
                     depth: 0,
@@ -301,7 +305,6 @@ var init = function(){
 
 
     var updateCola = function(){
-
         cola
             .nodes(graph.nodes)
             .links(graph.links)
@@ -328,8 +331,8 @@ var init = function(){
             .attr("fill", "none")
             .attr("pointer-events", "none")
             .attr("stroke-width", function(d){
-            if(d.show) return 1;
-            return 0;
+                if(d.show) return 1;
+                return 0;
             });
 
         vis.selectAll(".link")
@@ -345,19 +348,20 @@ var init = function(){
         vis.selectAll(".node")
             .data(graph.nodes)
             .exit().remove();
+        
     }
 
     updateCola();
 
     cola.on("tick", function () {        
         
-        vis.selectAll(".link").attr("d", function(d){
+        vis.selectAll(".link").transition().duration(transition_duration).attr("d", function(d){
 
           return "M"+d.source.x+","+d.source.y+ "L" + d.target.x + "," + d.target.y;
 
         });
         
-        vis.selectAll(".node").attr("transform", function (d) {
+        vis.selectAll(".node").transition().duration(transition_duration).attr("transform", function (d) {
 
             // Ok check if it needs drawing
             // This is brute force check, should really check if we need to
@@ -453,19 +457,21 @@ var init = function(){
 
     var debounced = debounce(function(param){
         var str = param;
-        console.log("STR: " + str);
         try {
             var param = JSON.parse(str);
             if(param instanceof Array) {
                 updateGraph(param);
+                transition_duration = 800;
                 updateCola();
+                setTimeout(function(){
+                    transition_duration = 0;
+                }, 800)
             } else {
                 d3.select("#message_status").html("Can't interpret input ( expecting array )");
             }
         } catch(e){
             d3.select("#message_status").html("Couldn't interpret input: not a valid expression.");
         }
-        console.log("Done");
     }, 500);
 
     d3.select("#tagquery").on("input", function(){
