@@ -3,7 +3,7 @@ Creates hierarchy from initial query and # of tag occurence.
 * In other words, to try to create a tag hierarchy from a flag tags.
 
 __Status__ :
-Stable, but still Work in progress. Would like to change query syntax. If you have an idea, drop me a line.
+Stable, but still Work in progress. Would like to change the query syntax. If you have an idea, drop me a line.
 
 __Behavior__:
 - You feed it a query and a list of objects with tags
