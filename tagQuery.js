@@ -123,7 +123,7 @@
                 });
 
                 // If max count = 1, add everything as leaves
-                if(highest_tag_count == -1) {
+                if(highest_tag_count == 1) {
                     discarded.forEach(function(item){
                         parent_leaves.push(item);
                     });
