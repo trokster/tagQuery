@@ -436,20 +436,6 @@ var init = function(){
 
 
     d3.select("#div-menu").html("<div style='width:100%;text-align:center;padding:5px;box-sizing:border-box'><span style='font-family:Quicksand;'>Edit query</span><br/><br/><input style='padding:5px;font-family:Quicksand;font-size:20px' id='tagquery' value='[\"milestone\", []]'></input><br/><small><i>Not sure how to avoid initial overlap, if you have an idea, drop me a pm please :)</i></small></div><br/><br/><div id='message_status' style='text-align:center;font-family:quicksand'></div>");
-    /*d3.select("#tagquery").on("change", function(){
-        var str = this.value;
-        try {
-            var param = JSON.parse(str);
-            if(param instanceof Array) {
-                updateGraph(param);
-                updateCola();
-            } else {
-                alert("Couldn't interpret input: " + str);
-            }
-        } catch(e){
-            alert("Couldn't interpret input: " + str);
-        }
-    }); */
 
     d3.select("#tagquery").on("input", function(){
         d3.select("#message_status").html("");
