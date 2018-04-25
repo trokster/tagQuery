@@ -66,11 +66,11 @@
             var discarded_query = null;
             var parent_leaves = [];
             
-            console.log("Processing query: " + JSON.stringify(queries));
+            //console.log("Processing query: " + JSON.stringify(queries));
 
             while(queries.length > 0) {
                 var query = queries.shift();
-                console.log("Analyzing: " + JSON.stringify(query));
+                //console.log("Analyzing: " + JSON.stringify(query));
                 if(typeof(query) == "string") {
                     if(qacc.length == 0) {
                         // We keep only the first strings, ignore those after a subquery
@@ -178,7 +178,7 @@
                 parent_leaves: parent_leaves
             };
 
-            console.log("Result of query analysis: " + JSON.stringify(res, null, 2) );
+            //console.log("Result of query analysis: " + JSON.stringify(res, null, 2) );
 
             return res;
 
@@ -269,7 +269,7 @@
             classify.apply(null, to_process.shift());
         }
 
-        console.log("tagQuery result: " + JSON.stringify(root, null, 4));
+        //console.log("tagQuery result: " + JSON.stringify(root, null, 4));
         return root;
     }
 

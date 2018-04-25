@@ -435,23 +435,35 @@ var init = function(){
     window.cola2 = cola ;
 
 
-    d3.select("#div-menu").html("<div style='width:100%;text-align:center;padding:5px;box-sizing:border-box'><span style='font-family:Quicksand;'>Edit query</span><br/><br/><input style='padding:5px;font-family:Quicksand;font-size:20px' id='tagquery' value='[\"milestone\", []]'></input><br/><small><i>Not sure how to avoid initial overlap, if you have an idea, drop me a pm please :)</i></small></div><br/><br/><div id='message_status' style='text-align:center;font-family:quicksand'></div>");
+    d3.select("#div-menu").html("<div style='width:100%;text-align:center;padding:5px;box-sizing:border-box'><span style='font-family:Quicksand;'>Edit query</span><br/><br/><textarea style='padding:5px;font-family:Quicksand;font-size:20px;opacity:.9' id='tagquery' value='[\"milestone\", []]'></textarea><br/><small><i>Not sure how to avoid initial overlap, if you have an idea, drop me a pm please :)</i></small></div><br/><br/><div id='message_status' style='text-align:center;font-family:quicksand'></div>");
 
     d3.select("#tagquery").on("input", function(){
         d3.select("#message_status").html("");
     });
 
+    d3.select("#tagquery").on("input", debounce(function(){
+        d3.select("#tagquery").style("height", d3.select("#tagquery")[0][0].scrollHeight);
+    }, 100));
+    
+
     var debounced = debounce(function(param){
         var str = param;
         try {
             var param = JSON.parse(str);
+            console.log("Calling: " + str);
+
             if(param instanceof Array) {
+
+                // Somehow i am not able to access via d3.text not sure why
+                d3.select("#tagquery")[0][0].value = JSON.stringify(param, null, 2);
+                d3.select("#tagquery").style("height", d3.select("#tagquery")[0][0].scrollHeight+"px");
+
                 updateGraph(param);
                 transition_duration = 800;
                 updateCola();
                 setTimeout(function(){
                     transition_duration = 0;
-                }, 800)
+                }, 800);
             } else {
                 d3.select("#message_status").html("Can't interpret input ( expecting array )");
             }
@@ -464,7 +476,8 @@ var init = function(){
         d3.select("#message_status").html("");
         debounced(this.value);
     });
-
+    d3.select("#tagquery")[0][0].value = JSON.stringify(["milestone", []], null, true);
+    d3.select("#tagquery").style("height", d3.select("#tagquery")[0][0].scrollHeight+"px");
 
     updateGraph(["milestone", []]);
     updateCola();
